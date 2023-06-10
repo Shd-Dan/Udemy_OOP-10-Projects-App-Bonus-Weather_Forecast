@@ -1,4 +1,6 @@
-import requests, pprint
+import pprint
+
+import requests
 
 
 # url = "http://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99&appid=71d19286fea826083bb6034cb77c82d2&units=metric"
@@ -16,15 +18,21 @@ class Weather:
         else:
             raise TypeError("Please provide the coordinates")
 
+        if self.data["cod"] != "200":
+            raise ValueError(self.data["message"])
+
     def next_12h(self):
         return self.data['list'][:4]
         # return len(self.data['list'])
 
     def next_12h_simplified(self):
-        pass
+        simple_data = []
+        for dicty in self.data['list'][:4]:
+            simple_data.append((dicty['dt_txt'], dicty['main']['temp'], dicty['weather'][0]['description']))
+        return simple_data
 
 
-latitude = 43.25
+latitude = 42.3
 longitude = 76.95
 weather = Weather(api_key="71d19286fea826083bb6034cb77c82d2", lat=latitude, lon=longitude)
-pprint.pprint(weather.next_12h())
+pprint.pprint(weather.next_12h_simplified())
